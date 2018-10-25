@@ -6,7 +6,6 @@
 @project: REDUS
 @contact_mail: sindre.vatnehol@hi.no
 @contact_cell: +47 900 79 376
-
 """
 
 

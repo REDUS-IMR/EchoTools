@@ -8,11 +8,11 @@
 @contact_cell: +47 900 79 376
 """
 
+import xml.etree.ElementTree
 
 
 
-
-def checkFileLocation(files,root): 
+def checkFileLocation(files,root,full_root): 
     '''
     Description: 
         Check if some of the important files are stored in the correct folder. 
@@ -21,12 +21,13 @@ def checkFileLocation(files,root):
         
         
     usage: 
-        filetype,directory = checkFileLocation(files,root)
+        filetype,directory = checkFileLocation(files,root, full_root)
         
         
         input:
         files = list of files within the relative directory
         root = relative directory, i.e. /ACOUSTIC/EK60/
+        full_root = full path to the current folder
         
         
         output: 
@@ -91,12 +92,10 @@ def checkFileLocation(files,root):
                     filetype = '.raw'
                     directory = root
             else: 
-                    filetype = '.raw'
-                    directory = root
+                filetype = '.raw'
+                directory = root
             
             
-    
-    
     
     #Check the .nc files if they are in the correct sub-folder
     if any(fname.endswith('.nc') for fname in files):
@@ -106,10 +105,9 @@ def checkFileLocation(files,root):
                     filetype = '.nc'
                     directory = root
             else: 
-                    filetype = '.nc'
-                    directory = root
+                filetype = '.nc'
+                directory = root
             
-
 
             
          
@@ -117,31 +115,60 @@ def checkFileLocation(files,root):
     if any(fname.endswith('.lsss') for fname in files):
         if not B in IgnoreFirstLevel: 
             if not A[-1] == 'LSSS': 
-                    filetype = '.lsss'
-                    directory = root
+                filetype = '.lsss'
+                directory = root
                
-            
             
             
     #Check the .work files if they are in the correct sub-folder
     if any(fname.endswith('.work') for fname in files):
         if not B in IgnoreFirstLevel: 
             if not A[-1] == 'WORK': 
-                    filetype = '.work'
-                    directory = root
+                filetype = '.work'
+                directory = root
                
-                
             
             
     #Check the .snap files if they are in the correct sub-folder
     if any(fname.endswith('.snap') for fname in files):
         if not B in IgnoreFirstLevel: 
             if not A[-1] == 'WORK': 
-                    filetype = '.snap'
-                    directory = root
+                filetype = '.snap'
+                directory = root
                
+                
+                
+    #Check if this is a biotix xml 
+    if any(fname.endswith('.xml') for fname in files):
+        if not B in IgnoreFirstLevel: 
+            if not A[-1] == 'WORK': 
+                filetype = '.snap'
+                directory = root
             
 
+            
+    #Check if the biotic.xml is stored in the correct sub-folder
+    if any(fname.endswith('.xml') for fname in files):
+        for file in files:
+            if file.endswith('.xml'): 
+                filename = (full_root+'/'+file)
+                filen = xml.etree.ElementTree.parse(filename).getroot()
+                if 'http://www.imr.no/formats/nmdbiotic' in (str(filen[0])): 
+                    if not root.split('\\')[-1]=='BIOTIC': 
+                        filetype = 'biotic.xml'
+                        directory = root
+
+
+
+    #CHeck if the LUF files are stored in a correct subfolder
+    if any(fname.endswith('.txt') for fname in files):
+        for file in files:
+            if file.startswith('ListUserFile'): 
+                if not root.split('\\')[-1] == 'REPORTS': 
+                    filetype = 'ListUserFile'
+                    directory = root        
+                    
+                    
     #return
     return filetype,directory
 
