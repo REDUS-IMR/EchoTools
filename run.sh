@@ -1,21 +1,33 @@
 #!/bin/sh
 
+# Define LSSS API url
 export LSSS_URL="http://localhost:8000"
-export CRUISE_DATA_ROOT="/ces/cruise_data"
-export NMD_QUALITY_ROOT="/data/workspace/quality"
 
-export LSSSDB_CSV="LSSSdb.csv"
+# Define the location of the CES cruise data
+export CRUISE_DATA_ROOT="/ces/cruise_data"
+
+# Define the location of the NMD echosounder output structures
+export NMD_QUALITY_ROOT="/data/tmp"
+
+# Set output CSV files (containing the location of the LSSS related files) 
 export CES_LSSS_CSV="CES-LSSS.csv"
 
+# Scratch directory for the LSSS
 export MAIN_SCRATCH_DIR="`pwd`/main"
 
+# Set overwrite outputs
 export OVERWRITE_OUTPUT=1
+
+# Set to process raw as addition to processing from database (WARNING: Super slow!)
 export PROCESS_RAW=1
 
+## DO NOT MODIFY BELOW ##
+
+# Create scratch if not exists
 mkdir -p $MAIN_SCRATCH_DIR
 
-findAcousticsLSSSdb.sh > $LSSSDB_CSV
+# Traverse the required LSSS files (needs couple of hours to finish)
+python EchoConvFindLSSSAll.py
 
-python EchoConvFindLSSSRaw.py
-
+# Do conversion
 python EchoConvRun.py -i $CES_LSSS_CSV
