@@ -29,8 +29,8 @@ def processLSSS(cruiseNumber, outPath, lsssFile, dbDir, ek60File, workFile, IMPa
     rawExists = False
     dbExists = False
 
-    # If work and raw files are not exist, then no raw processing will take place
-    if ek60File[i] != "False" and workFile[i] != "False":
+    # If either work and raw files not exist or processRaw is False, then no raw processing will take place
+    if ek60File[i] != "False" and workFile[i] != "False" and processRaw:
         rawExists = True
     else:
         rawExist = False
@@ -130,6 +130,7 @@ def processLSSS(cruiseNumber, outPath, lsssFile, dbDir, ek60File, workFile, IMPa
         if r.status_code == 200:
             with open(reportFileDB, 'w+') as f:
                 f.write(r.text)
+            print "Saved " + reportFileDB
     else:
         print("Not processing DB ", dbExists is True , overwrite is True , os.path.isfile(reportFileDB) is False)
 

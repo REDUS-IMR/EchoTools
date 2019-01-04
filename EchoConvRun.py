@@ -39,11 +39,14 @@ def main(argv):
    processRaw = True if os.environ['PROCESS_RAW'] == '1' else False
    overwrite = True if os.environ['OVERWRITE_OUTPUT'] == '1' else False
 
+   print "Process RAW: " + str(processRaw)
+   print "Overwrite: " + str(overwrite)
+
    with open(inputfile, 'rb') as csvfile:
       creader = csv.reader(csvfile, delimiter=',')
       for row in creader:
-        cruiseNumber.append(row[2])
-        outPath.append(row[3])
+        cruiseNumber.append(row[3])
+        outPath.append(row[2])
         lsssFile.append(row[1])
         dbDir.append(row[0])
         ek60File.append(row[5])
